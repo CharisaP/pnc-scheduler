@@ -1,0 +1,6 @@
+app.py
+  -uses MVC (model view controller)
+  -for database controlling
+  -temp session key = 'my precious'
+    -security flaw, will update later to randomized key in separate config file
+    
