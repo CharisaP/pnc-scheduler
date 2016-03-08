@@ -1,0 +1,4 @@
+app.py
+  -uses MVC (model view controller)
+  -for database controlling
+  
