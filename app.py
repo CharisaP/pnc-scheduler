@@ -1,6 +1,6 @@
 # import the Flask class from the flask module
 from flask import Flask, render_template, redirect, \
-    url_for, request, session, flash
+    url_for, request, session, flash , g
 from functools import wraps
 import sqlite3
 
