@@ -9,8 +9,10 @@ from functools import wraps
 app = Flask(__name__)
 
 # config
-app.secret_key = 'my precious'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+#app.secret_key = 'my precious'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+import os
+app.config.from_object(os.environ[APP_SETTINGS])
 
 # create sqlalchemy object
 db = SQLAlchemy(app)
@@ -77,4 +79,4 @@ def logout():
 
 # start the server with the 'run()' method
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
