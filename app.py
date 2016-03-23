@@ -9,15 +9,15 @@ from functools import wraps
 app = Flask(__name__)
 
 # config
-#app.secret_key = 'my precious'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+
 import os
-app.config.from_object(os.environ[APP_SETTINGS])
+app.config.from_object(os.environ['APP_SETTINGS'])
+print os.environ['APP_SETTINGS']
 
 # create sqlalchemy object
 db = SQLAlchemy(app)
 
-from models import *
+from models import * #must be done after db is defined
 
 # login required decorator
 def login_required(f):
