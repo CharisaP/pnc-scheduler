@@ -12,18 +12,19 @@ class BlogPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
-    author_id = db.Column(db.Integer, ForeignKey('users.id'))
+    #author_id = db.Column(db.Integer, ForeignKey('users.id'))
 
-    def __init__(self, title, description, author_id):
+    #def __init__(self, title, description, author_id):
+    def __init__(self, title, description):
         self.title = title
         self.description = description
-        self.author_id = author_id
+        #self.author_id = author_id
 
     def __repr__(self):
-        return '<title {}'.format(self.title)
+        return '<{}>'.format(self.title)
 
 
-class User(db.Model):
+'''class User(db.Model):
 
     __tablename__ = "users"
 
@@ -51,4 +52,4 @@ class User(db.Model):
         return unicode(self.id)
 
     def __repr__(self):
-        return '<name - {}>'.format(self.name)
+        return '<name - {}>'.format(self.name)'''
