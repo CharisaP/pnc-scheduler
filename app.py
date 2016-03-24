@@ -6,7 +6,7 @@ from functools import wraps
 #import sqlite3
 
 # create the application object
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 # config
 
