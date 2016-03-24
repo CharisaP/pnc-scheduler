@@ -12,7 +12,7 @@ app = Flask(__name__, static_url_path='')
 
 import os
 app.config.from_object(os.environ['APP_SETTINGS'])
-print os.environ['APP_SETTINGS']
+
 
 # create sqlalchemy object
 db = SQLAlchemy(app)
@@ -72,9 +72,7 @@ def logout():
     flash('You were logged out.')
     return redirect(url_for('welcome'))
     
-# connect to database
-#def connect_db():
-#    return sqlite3.connect(app.database)
+
 
 
 # start the server with the 'run()' method
