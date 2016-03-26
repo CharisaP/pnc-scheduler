@@ -1,8 +1,9 @@
 # import the Flask class from the flask module
 from flask import Flask, render_template, redirect, \
-    url_for, request, session, flash
+    url_for, request, session, flash, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 from functools import wraps
+import json
 #import sqlite3
 
 # create the application object
@@ -73,6 +74,23 @@ def logout():
     return redirect(url_for('welcome'))
     
 
+@app.route('/data')
+def return_data():
+	print "begin working through data"
+	start_date = request.args.get('start', '')
+	end_date = request.args.get('end', '')
+	print "Working through data"
+    # You'd normally use the variables above to limit the data returned
+    # you don't want to return ALL events like in this code
+    # but since no db or any real storage is implemented I'm just
+    # returning data from a text file that contains json elements
+
+	with open("events.json", "r") as input_data:
+        # you should use something else here than just plaintext
+        # check out jsonfiy method or the built in json module
+        # http://flask.pocoo.org/docs/0.10/api/#module-flask.json
+		return input_data.read()
+ 
 
 
 # start the server with the 'run()' method
