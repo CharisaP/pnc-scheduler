@@ -1,0 +1,3 @@
+heroku config:set APP_SETTINGS=config.ProductionConfig --remote heroku
+
+export DATABASE_URL="postgresql://localhost/pnc_dev"
