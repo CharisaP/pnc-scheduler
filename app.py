@@ -76,20 +76,18 @@ def logout():
 
 @app.route('/data')
 def return_data():
-	print "begin working through data"
-	start_date = request.args.get('start', '')
-	end_date = request.args.get('end', '')
-	print "Working through data"
-    # You'd normally use the variables above to limit the data returned
-    # you don't want to return ALL events like in this code
-    # but since no db or any real storage is implemented I'm just
-    # returning data from a text file that contains json elements
+    pass
 
-	with open("events.json", "r") as input_data:
-        # you should use something else here than just plaintext
-        # check out jsonfiy method or the built in json module
-        # http://flask.pocoo.org/docs/0.10/api/#module-flask.json
-		return input_data.read()
+
+@app.route('/deletedata')
+def return_data():
+    pass
+
+@app.route('/savedata')
+def return_data():
+    event_obj = request.args.get('data')
+    # event obj needs to be json
+    print event_obj
  
 
 
