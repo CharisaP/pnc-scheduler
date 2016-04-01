@@ -48,7 +48,7 @@ def welcome():
 @app.route('/sample')
 @login_required
 def sample():
-	return render_template('sample.html') #create test calendar
+	return render_template('sample2.html') #create test calendar
 
 
 # route for handling the login page logic
