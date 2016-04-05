@@ -5,23 +5,37 @@ from flask import Flask, render_template, redirect, \
 from flask.ext.sqlalchemy import SQLAlchemy
 from functools import wraps
 import json
-import sqlite3
-
-# create the application object
+from sqlite3 import dbapi2 as sqlite3
 app = Flask(__name__, static_url_path='')
-
-# config
-
 import os
 app.config.from_object(os.environ['APP_SETTINGS'])
-app.database = 'sample.db'
+DATABASE = './db/test.db'
 #create connection and cursor
 
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+        db.row_factory = sqlite3.Row
+    return db
 
-# create sqlalchemy object
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None: db.close()
 
-#db = SQLAlchemy(app)
+def query_db(query, args=(), one=False):
+    cur = get_db().execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
 
+def init_db():
+    with app.app_context():
+        db = get_db()
+        with app.open_resource('events.sql', mode='r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
 
 
 #from models import * #must be done after db is defined
@@ -88,23 +102,74 @@ def logout():
 def connect_db():
    	return sqlite3.connect(app.database)
     
-'''
-@app.route('/data')
+
+@app.route('/eventdata')
 def return_data():
-    pass
+    mstart = request.args.get('start')
+    mend = request.args.get('end')
+    myevents = []
+    for event in query_db('SELECT * FROM events WHERE start >= ? AND end <= ?', (mstart, mend,)):
+        event_dict = {
+                        'id' : event['id'],
+                        'title' : event['title'],
+                        'start' : event['start'],
+                        'end' : event['end'],
+                        'details' : event['details']
+                      }
+        myevents.append(event_dict)
+    return json.dumps(myevents)
+
+@app.route('/deletedata', methods=['POST'])
+def delete_data():
+    eid = request.form['id']
+    db = get_db()
+    event = query_db('SELECT * FROM events WHERE id = ?', (eid,), one = True)
+    event_dict = {
+                    'id' : event['id'],
+                    'title' : event['title'],
+                    'start' : event['start'],
+                    'end' : event['end'],
+                    'details' : event['details']
+                    }
+    db.execute('DELETE FROM events WHERE id = ?', (eid,))
+    db.commit()
+    return jsonify(event_dict)
 
 
-@app.route('/deletedata')
-def return_data():
-    pass
-'''
-@app.route('/savedata')
-def return_data():
-    event_obj = request.args.get('data')
-    # event obj needs to be json
-    print event_obj
- 
+@app.route('/savedata', methods=['POST'])
+def save_data():
+    #init_db()
+    db = get_db()
+    eid = request.form['title']
+    etitle = request.form['title']
+    estart = request.form['start']
+    eend = request.form['end']
+    edetails = request.form['details']
+    testo = query_db('SELECT * FROM events WHERE id = ?', (eid,), one = True)
+    print testo
+    if testo != None:
+        db.execute('DELETE FROM events WHERE id = ?', (eid,))
+        db.commit()
+    print eid
+    print etitle
+    print estart
+    print eend 
+    print edetails
+    sql = "INSERT INTO events (id, title, start, end, details) VALUES('%s', '%s', '%s', '%s', '%s')" %(eid, etitle, estart, eend, edetails)
+    db = get_db()
+    db.execute(sql)
+    db.commit()
+    event_dict = {
+                    'id' : eid,
+                    'title' : etitle,
+                    'start' : estart,
+                    'end' : eend,
+                    'details' : edetails
+                    }
+    return jsonify(event_dict)
+
 # start the server with the 'run()' method
 if __name__ == '__main__':
+    app.debug = True
     app.run()
 
