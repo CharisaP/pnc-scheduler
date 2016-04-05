@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS "events";
+CREATE TABLE "events" ("id" TEXT PRIMARY KEY  NOT NULL , "title" TEXT NOT NULL , "start" DATETIME NOT NULL , "end" DATETIME NOT NULL , "details" TEXT NOT NULL);
