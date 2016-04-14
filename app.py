@@ -6,8 +6,9 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from functools import wraps
 import json
 from sqlite3 import dbapi2 as sqlite3
-app = Flask(__name__, static_url_path='')
 import os
+import uuid
+app = Flask(__name__, static_url_path='')
 app.config.from_object(os.environ['APP_SETTINGS'])
 DATABASE = './db/test.db'
 #create connection and cursor
@@ -33,10 +34,9 @@ def query_db(query, args=(), one=False):
 def init_db():
     with app.app_context():
         db = get_db()
-        with app.open_resource('events.sql', mode='r') as f:
+        with app.open_resource('./db/events.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
-
 
 #from models import * #must be done after db is defined
 
@@ -72,10 +72,9 @@ def welcome():
 @app.route('/sample')
 @login_required
 def sample():
-	f = open('templates/sample2.html')
+	f = open('templates/sample3.html')
 	return f.read()
 	#return #render_template('sample.html') #create test calendar
-
 
 # route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
@@ -118,6 +117,7 @@ def return_data():
                       }
         myevents.append(event_dict)
     return json.dumps(myevents)
+    #return 'okay'
 
 @app.route('/deletedata', methods=['POST'])
 def delete_data():
@@ -138,23 +138,18 @@ def delete_data():
 
 @app.route('/savedata', methods=['POST'])
 def save_data():
-    #init_db()
+    #init_db()
     db = get_db()
-    eid = request.form['title']
+    eid = request.form['id']
     etitle = request.form['title']
     estart = request.form['start']
     eend = request.form['end']
     edetails = request.form['details']
     testo = query_db('SELECT * FROM events WHERE id = ?', (eid,), one = True)
-    print testo
     if testo != None:
         db.execute('DELETE FROM events WHERE id = ?', (eid,))
         db.commit()
-    print eid
-    print etitle
-    print estart
-    print eend 
-    print edetails
+    eid = uuid.uuid4()
     sql = "INSERT INTO events (id, title, start, end, details) VALUES('%s', '%s', '%s', '%s', '%s')" %(eid, etitle, estart, eend, edetails)
     db = get_db()
     db.execute(sql)
