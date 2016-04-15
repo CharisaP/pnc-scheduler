@@ -58,11 +58,11 @@ def login_required(f):
 def home():
 	# return "Hello, World!"  # return a string
     #posts = db.session.query(BlogPost).all() #change this
-    g.db = connect_db()
-    cur = g.db.execute('select * from posts')
-    posts = [dict(title = row[0], description = row[1]) for row in cur.fetchall()]
-    g.db.close()
-    return render_template('index.html', posts=posts)  # render a template
+    #g.db = connect_db()
+    #cur = g.db.execute('select * from posts')
+    #posts = [dict(title = row[0], description = row[1]) for row in cur.fetchall()]
+    #g.db.close()
+    return render_template('index.html')  # render a template
 
 
 @app.route('/welcome')
