@@ -58,11 +58,11 @@ def login_required(f):
 def home():
 	# return "Hello, World!"  # return a string
     #posts = db.session.query(BlogPost).all() #change this
-    #g.db = connect_db()
-    #cur = g.db.execute('select * from posts')
-    #posts = [dict(title = row[0], description = row[1]) for row in cur.fetchall()]
-    #g.db.close()
-    return render_template('index.html')  # render a template
+    g.db = connect_db()
+    cur = g.db.execute('select * from posts')
+    posts = [dict(title = row[0], description = row[1]) for row in cur.fetchall()]
+    g.db.close()
+    return render_template('index.html', posts=posts)  # render a template
 
 
 @app.route('/welcome')
@@ -135,7 +135,25 @@ def delete_data():
     db.commit()
     return jsonify(event_dict)
 
-
+'''
+@app.route('/createuser', methods=['GET', 'POST'])
+def save_user():
+    if request.method == 'POST':
+        db = get_db()                                   #database is referenced through "db"
+        eid = uuid.uuid4()                              #id is created automatically. (never seen by user)
+        eusername = request.form['username']    
+        epassword = request.form['password']
+        efn = request.form['first_name']
+        eln = request.form['last_name']
+        testo = query_db('SELECT * FROM users WHERE username = ?', (eusername,), one = True)
+        if testo != None:
+            flash('error: username already exists')
+            return redirect(url_for('createuser'))      #error checking to make sure that the username doesnt already exist
+        sql = "INSERT INTO users (id, username, password, first_name, last_name) VALUES('%s', '%s', '%s', '%s', '%s')" %(eid, eusername, epassword, efn, eln)
+        db.execute(sql)
+        db.commit()
+    return render_template('createuser.html', error=error)
+'''
 @app.route('/savedata', methods=['POST'])
 def save_data():
     #init_db()
@@ -145,10 +163,12 @@ def save_data():
     estart = request.form['start']
     eend = request.form['end']
     edetails = request.form['details']
+
     testo = query_db('SELECT * FROM events WHERE id = ?', (eid,), one = True)
     if testo != None:
         db.execute('DELETE FROM events WHERE id = ?', (eid,))
         db.commit()
+
     eid = uuid.uuid4()
     sql = "INSERT INTO events (id, title, start, end, details) VALUES('%s', '%s', '%s', '%s', '%s')" %(eid, etitle, estart, eend, edetails)
     db = get_db()
