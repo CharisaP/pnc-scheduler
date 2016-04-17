@@ -3,7 +3,9 @@
 from flask import Flask, render_template, redirect, \
     url_for, request, session, flash, jsonify, g
 from flask.ext.sqlalchemy import SQLAlchemy
-from forms import MessageForm
+from flask_wtf import Form
+from tempform import RegisterForm
+from tempform import MessageForm
 from functools import wraps
 import json
 from sqlite3 import dbapi2 as sqlite3
@@ -63,18 +65,24 @@ def home():
     #cur = g.db.execute('select * from posts')
     #posts = [dict(title = row[0], description = row[1]) for row in cur.fetchall()]
     #g.db.close()
+
+    #first, need to query the database for existing posts. 
+    #then:
     db = get_db()
-    form = MessageForm() #create blank message form
+    form = MessageForm(request.form) #create blank message form
     if request.method == 'POST':
-        title = request.form['title']
-        descript = request.form['description']
-        sql = "INSERT INTO posts (title, description) VALUES('%s', '%s')" %(title, descript)
-        db = get_db()
-        db.execute(sql)
-        db.commit()
-        flash("Post added")
-        return redirect(url_for('home'))
-    return render_template('index.html',form=form)  # render a template
+        if form.validate_on_submit():
+            title = request.form['title']
+            descript = request.form['description']
+            return "post added"
+            sql = "INSERT INTO posts (title, description) VALUES('%s', '%s')" %(title, descript)
+            db = get_db()
+            db.execute(sql)
+            db.commit()
+            flash("Post added")
+            return redirect(url_for('home.home'))
+    else:
+        return render_template('index.html',form=form)  # render a template
 
 @app.route('/welcome')
 def welcome():
@@ -147,23 +155,26 @@ def delete_data():
     return jsonify(event_dict)
 
 
-@app.route('/newUser', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def save_user():
+    form = RegisterForm(request.form) 
     if request.method == 'POST':
-        db = get_db()                                   #database is referenced through "db"
-        eid = uuid.uuid4()                              #id is created automatically. (never seen by user)
-        eusername = request.form['username']    
-        epassword = request.form['password']
-        efn = request.form['first_name']
-        eln = request.form['last_name']
-        testo = query_db('SELECT * FROM users WHERE username = ?', (eusername,), one = True)
-        if testo != None:
-            flash('error: username already exists')
-            return redirect(url_for('newUser'))      #error checking to make sure that the username doesnt already exist
-        sql = "INSERT INTO users (id, username, password, first_name, last_name) VALUES('%s', '%s', '%s', '%s', '%s')" %(eid, eusername, epassword, efn, eln)
-        db.execute(sql)
-        db.commit()
-    return render_template('newUser.html')
+        if form.validate_on_submit():
+            db = get_db()                                   #database is referenced through "db"
+            eid = uuid.uuid4()   
+                                      #id is created automatically. (never seen by user)
+            eusername = request.form['username']    
+            epassword = request.form['password']
+            efn = request.form['first_name']
+            eln = request.form['last_name']
+            testo = query_db('SELECT * FROM users WHERE username = ?', (eusername,), one = True)
+            if testo != None:
+                flash('error: username already exists')
+                return redirect(url_for('register'))      #error checking to make sure that the username doesnt already exist
+            sql = "INSERT INTO users (id, username, password, first_name, last_name) VALUES('%s', '%s', '%s', '%s', '%s')" %(eid, eusername, epassword, efn, eln)
+            db.execute(sql)
+            db.commit()
+    return render_template('register.html',form=form)
 
 @app.route('/savedata', methods=['POST'])
 def save_data():
