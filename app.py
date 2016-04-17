@@ -56,14 +56,17 @@ def login_required(f):
 @app.route('/')
 @login_required
 def home():
-	# return "Hello, World!"  # return a string
+    # return "Hello, World!"  # return a string
     #posts = db.session.query(BlogPost).all() #change this
-    g.db = connect_db()
-    cur = g.db.execute('select * from posts')
-    posts = [dict(title = row[0], description = row[1]) for row in cur.fetchall()]
-    g.db.close()
-    return render_template('index.html', posts=posts)  # render a template
-
+    #g.db = connect_db()
+    #cur = g.db.execute('select * from posts')
+    #posts = [dict(title = row[0], description = row[1]) for row in cur.fetchall()]
+    #g.db.close()
+    form = MessageForm() #create blank message form
+    if request.method == 'POST':
+        flash("Post added")
+        return redirect(url_for('home'))
+    return render_template('index.html',form=form)  # render a template
 
 @app.route('/welcome')
 def welcome():
@@ -72,9 +75,9 @@ def welcome():
 @app.route('/sample')
 @login_required
 def sample():
-	f = open('templates/sample3.html')
-	return f.read()
-	#return #render_template('sample.html') #create test calendar
+    f = open('templates/sample3.html')
+    return f.read()
+    #return #render_template('sample.html') #create test calendar
 
 # route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
@@ -99,7 +102,7 @@ def logout():
     return redirect(url_for('welcome'))
 
 def connect_db():
-   	return sqlite3.connect(app.database)
+    return sqlite3.connect(app.database)
     
 
 @app.route('/eventdata')
@@ -187,4 +190,3 @@ def save_data():
 if __name__ == '__main__':
     app.debug = True
     app.run()
-
