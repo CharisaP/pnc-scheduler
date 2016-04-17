@@ -83,10 +83,10 @@ def home():
         flash("Post added")
         return redirect(url_for('home'))
     else:
-        q = query_db('SELECT * FROM posts')
-
-
-        return render_template('index.html', form=form, q=q)
+        posts = query_db('SELECT * FROM posts')
+        #for post in query_db('SELECT * FROM posts '):
+            #posts.append(post)
+        return render_template('index.html', form=form, posts=posts)
 
         #return render_template('index.html',form=form)  # render a template
 
