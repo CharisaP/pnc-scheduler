@@ -1,5 +1,8 @@
 alembic==0.8.5
+bcrypt==2.0.0
+cffi==1.5.2
 Flask==0.10.1
+Flask-Login==0.3.2
 Flask-Migrate==1.8.0
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.1
@@ -10,7 +13,9 @@ Jinja2==2.8
 Mako==1.0.4
 MarkupSafe==0.23
 psycopg2==2.6.1
+pycparser==2.14
 python-editor==0.5
+six==1.10.0
 SQLAlchemy==1.0.12
 Werkzeug==0.11.5
 WTForms==2.1

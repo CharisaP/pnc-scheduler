@@ -6,7 +6,7 @@
 <br>
 <form class="form-signin" role="form" method="post" action="">
   {{ form.csrf_token }}
-  <p>
+  <p> <label>Username</label>
     {{ form.username(placeholder="username") }}
     <span class="error">
       {% if form.username.errors %}
@@ -16,7 +16,7 @@
       {% endif %}
     </span>
   </p>
-  <p>
+  <p> <label>First Name</label>
   {{ form.first_name(placeholder="first name") }}
     <span class="error">
       {% if form.first_name.errors %}
@@ -26,7 +26,7 @@
       {% endif %}
     </span>
   </p>
-  <p>
+  <p> <label>Last Name</label>
   {{ form.last_name(placeholder="last name") }}
     <span class="error">
       {% if form.last_name.errors %}
@@ -36,7 +36,7 @@
       {% endif %}
     </span>
   </p>
-  <p>
+  <p> <label>Password</label>
   {{ form.password(placeholder="password") }}
     <span class="error">
       {% if form.password.errors %}
@@ -46,7 +46,7 @@
       {% endif %}
     </span>
   </p>
-  <p>
+  <p> <label>Confirm Password</label>
   {{ form.confirm(placeholder="confirm") }}
     <span class="error">
       {% if form.confirm.errors %}

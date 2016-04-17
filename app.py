@@ -15,7 +15,7 @@ app = Flask(__name__, static_url_path='')
 app.config.from_object(os.environ['APP_SETTINGS'])
 DATABASE = './db/test.db'
 #create connection and cursor
-
+CURRENT_USER = ""
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -74,7 +74,7 @@ def home():
     if form.validate_on_submit():
         title = request.form['title']
         descript = request.form['description']
-        author = "temp_author"
+        author = CURRENT_USER
         #return "post added"
         sql = "INSERT INTO posts (title, description, author) VALUES('%s', '%s' ,'%s')" %(title, descript, author)
         db = get_db()
@@ -110,11 +110,13 @@ def login():
         lpass = request.form['password']
         ########un-hash the password#########
         testo = query_db('SELECT * FROM users WHERE username >= ? AND password <= ?', (luser, lpass,), one=True)
-        if testo != None:
+        if testo == None:
             flash('error: incorrect username or password.')
             return redirect(url_for('login'))
         else:
+            CURRENT_USER = "temp_user"
             session['logged_in'] = True
+            
             flash('You were logged in.')
             ####set current user to username
             return redirect(url_for('home'))
