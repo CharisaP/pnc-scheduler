@@ -14,9 +14,13 @@ class RegisterForm(Form):
         'username',
         validators=[DataRequired(), Length(min=3, max=25)]
     )
-    email = TextField(
-        'email',
-        validators=[DataRequired(), Email(message=None), Length(min=6, max=40)]
+    first_name = TextField(
+        'first_name',
+        validators=[DataRequired(), Length(min=6, max=40)]
+    )
+    last_name = TextField(
+        'last_name',
+        validators=[DataRequired(), Length(min=6, max=40)]
     )
     password = PasswordField(
         'password',

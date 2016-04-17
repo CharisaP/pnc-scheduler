@@ -163,24 +163,26 @@ def delete_data():
 
 @app.route('/register', methods=['GET', 'POST'])
 def save_user():
-    form = RegisterForm(request.form) 
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            db = get_db()                                   #database is referenced through "db"
-            eid = uuid.uuid4()   
-                                      #id is created automatically. (never seen by user)
-            eusername = request.form['username']    
-            epassword = request.form['password']
-            efn = request.form['first_name']
-            eln = request.form['last_name']
-            testo = query_db('SELECT * FROM users WHERE username = ?', (eusername,), one = True)
-            if testo != None:
-                flash('error: username already exists')
-                return redirect(url_for('register'))      #error checking to make sure that the username doesnt already exist
-            sql = "INSERT INTO users (id, username, password, first_name, last_name) VALUES('%s', '%s', '%s', '%s', '%s')" %(eid, eusername, epassword, efn, eln)
-            db.execute(sql)
-            db.commit()
-    return render_template('register.html',form=form)
+    form = RegisterForm() 
+    db = get_db()  
+    if form.validate_on_submit():
+                                         #database is referenced through "db"
+        eid = uuid.uuid4()   
+                                  #id is created automatically. (never seen by user)
+        eusername = request.form['username']    
+        epassword = request.form['password']
+        efn = request.form['first_name']
+        eln = request.form['last_name']
+        testo = query_db('SELECT * FROM users WHERE username = ?', (eusername,), one = True)
+        if testo != None:
+            flash('error: username already exists')
+                #error checking to make sure that the username doesnt already exist
+        sql = "INSERT INTO users (id, username, password, first_name, last_name) VALUES('%s', '%s', '%s', '%s', '%s')" %(eid, eusername, epassword, efn, eln)
+        db.execute(sql)
+        db.commit()
+        return redirect(url_for('home'))
+    else:
+        return render_template('register.html',form=form)
 
 @app.route('/savedata', methods=['POST'])
 def save_data():
