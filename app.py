@@ -106,12 +106,17 @@ def sample():
 def login():  
     error = None
     if request.method == 'POST':
-        if (request.form['username'] != 'admin') \
-                or request.form['password'] != 'admin':
-            error = 'Invalid Credentials. Please try again.'
+        luser = request.form['username']
+        lpass = request.form['password']
+        ########un-hash the password#########
+        testo = query_db('SELECT * FROM users WHERE username >= ? AND password <= ?', (luser, lpass,), one=True)
+        if testo != None:
+            flash('error: incorrect username or password.')
+            return redirect(url_for('login'))
         else:
             session['logged_in'] = True
             flash('You were logged in.')
+            ####set current user to username
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
