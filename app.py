@@ -70,19 +70,25 @@ def home():
     #then:
     db = get_db()
     form = MessageForm(request.form) #create blank message form
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            title = request.form['title']
-            descript = request.form['description']
-            return "post added"
-            sql = "INSERT INTO posts (title, description) VALUES('%s', '%s')" %(title, descript)
-            db = get_db()
-            db.execute(sql)
-            db.commit()
-            flash("Post added")
-            return redirect(url_for('home.home'))
+    
+    if form.validate_on_submit():
+        title = request.form['title']
+        descript = request.form['description']
+        author = "temp_author"
+        #return "post added"
+        sql = "INSERT INTO posts (title, description, author) VALUES('%s', '%s' ,'%s')" %(title, descript, author)
+        db = get_db()
+        db.execute(sql)
+        db.commit()
+        flash("Post added")
+        return redirect(url_for('home'))
     else:
-        return render_template('index.html',form=form)  # render a template
+        q = query_db('SELECT * FROM posts')
+
+
+        return render_template('index.html', form=form, q=q)
+
+        #return render_template('index.html',form=form)  # render a template
 
 @app.route('/welcome')
 def welcome():
