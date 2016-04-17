@@ -54,7 +54,7 @@ def login_required(f):
 
 
 # use decorators to link the function to a url
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
     # return "Hello, World!"  # return a string
@@ -63,8 +63,15 @@ def home():
     #cur = g.db.execute('select * from posts')
     #posts = [dict(title = row[0], description = row[1]) for row in cur.fetchall()]
     #g.db.close()
+    db = get_db()
     form = MessageForm() #create blank message form
     if request.method == 'POST':
+        title = request.form['title']
+        descript = request.form['description']
+        sql = "INSERT INTO posts (title, description) VALUES('%s', '%s')" %(title, descript)
+        db = get_db()
+        db.execute(sql)
+        db.commit()
         flash("Post added")
         return redirect(url_for('home'))
     return render_template('index.html',form=form)  # render a template
