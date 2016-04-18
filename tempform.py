@@ -1,4 +1,3 @@
-
 from flask_wtf import Form
 from wtforms import TextField, PasswordField, StringField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
@@ -33,8 +32,3 @@ class RegisterForm(Form):
             DataRequired(), EqualTo('password', message='Passwords must match.')
         ]
     )
-    verification_code = PasswordField(
-		'verification_code',
-		validators=[DataRequired(), Length(min=1, max=50)
-		]
-	)

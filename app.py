@@ -9,6 +9,7 @@ from tempform import RegisterForm
 from tempform import MessageForm
 from functools import wraps
 import json
+import datetime
 from sqlite3 import dbapi2 as sqlite3
 import os
 import uuid
@@ -80,18 +81,21 @@ def home():
     if form.validate_on_submit():
         title = request.form['title']
         descript = request.form['description']
-        author = CURRENT_USER
-        #return "post added"
-        sql = "INSERT INTO posts (title, description, author) VALUES('%s', '%s' ,'%s')" %(title, descript, author)
+        eid = uuid.uuid4()
+        nameo = query_db('SELECT first_name, last_name FROM users WHERE username = ?', (CURRENT_USER,), one = True)
+        author = nameo[0] + ' ' + nameo[1]
+        now = datetime.datetime.now()
+        date = now.strftime("X%m/X%d/%Y X%I:%M %p").replace('X0','X').replace('X','')
+        sql = "INSERT INTO posts (id, title, description, author, date) VALUES('%s', '%s', '%s' ,'%s', '%s')" %(eid, title, descript, author, date)
         db = get_db()
         db.execute(sql)
         db.commit()
         flash("Post added")
         return redirect(url_for('home'))
     else:
-        posts = query_db('SELECT * FROM posts')
-        #for post in query_db('SELECT * FROM posts '):
-            #posts.append(post)
+        start_date = datetime.datetime.now() + datetime.timedelta(-30)                          #ONLY DISPLAY EVENTS FROM PAST 30 DAYS
+        sdate = start_date.strftime("X%m/X%d/%Y X%I:%M %p").replace('X0','X').replace('X','')
+        posts = query_db('SELECT * FROM posts WHERE date >= ? ORDER BY date DESC', (sdate,))    #EVENTS SORTED BY DATE (DESCENDING)
         return render_template('index.html', form=form, posts=posts)
 
         #return render_template('index.html',form=form)  # render a template
@@ -171,12 +175,21 @@ def delete_data():
     db.commit()
     return jsonify(event_dict)
 
+@app.route('/deletepost', methods=['POST'])
+def delete_post():
+    print '\nayyyyy\n'
+    db = get_db()
+    eid = request.form['deleteEntry']
+    print eid
+    db.execute('DELETE FROM posts WHERE id = ?', (eid,))
+    db.commit()
+    return redirect(url_for('home'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def save_user():
+    #init_db()
     form = RegisterForm() 
     db = get_db()  
-    error = None
     if form.validate_on_submit():
                                          #database is referenced through "db"
         eid = uuid.uuid4()   
@@ -186,14 +199,9 @@ def save_user():
         epassword = bcrypt.generate_password_hash(tpassword)
         efn = request.form['first_name']
         eln = request.form['last_name']
-        verify = request.form['verification_code']
-        if verify != "pnc2016":
-            flash("incorrect code.")
-            return render_template('register.html',form=form)
         testo = query_db('SELECT * FROM users WHERE username = ?', (eusername,), one = True)
         if testo != None:
             flash('error: username already exists')
-            return redirect(url_for('register'))
                 #error checking to make sure that the username doesnt already exist
         sql = "INSERT INTO users (id, username, password, first_name, last_name) VALUES('%s', '%s', '%s', '%s', '%s')" %(eid, eusername, epassword, efn, eln)
         db.execute(sql)
@@ -207,7 +215,9 @@ def save_data():
     #init_db()
     db = get_db()
     eid = request.form['id']
-    etitle = request.form['title']
+    nameo = query_db('SELECT first_name, last_name FROM users WHERE username = ?', (CURRENT_USER,), one = True)
+    etitle = nameo[0] + ' ' + nameo[1]
+    #etitle = request.form['title']
     estart = request.form['start']
     eend = request.form['end']
     edetails = request.form['details']
