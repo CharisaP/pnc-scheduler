@@ -15,7 +15,11 @@ app = Flask(__name__, static_url_path='')
 app.config.from_object(os.environ['APP_SETTINGS'])
 DATABASE = './db/test.db'
 #create connection and cursor
+
+
 CURRENT_USER = ""
+
+
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -114,11 +118,13 @@ def login():
             flash('error: incorrect username or password.')
             return redirect(url_for('login'))
         else:
-            CURRENT_USER = "temp_user"
+            flash("You were successfully logged in!")
             session['logged_in'] = True
+            global CURRENT_USER
+            CURRENT_USER    = luser
             
-            flash('You were logged in.')
             ####set current user to username
+
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
 

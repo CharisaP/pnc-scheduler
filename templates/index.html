@@ -2,10 +2,10 @@
 {% block content %}
 
 <h1>Welcome to Prime Nursing Care!</h1>
-<h2>Announcements will go here. (Under Construction)</h2>
+
 <br>
 <p>Click <a href="/logout">here</a> to logout.</p>
-<p>Click <a href="/sample">here</a> to see a sample calendar. </p>
+<p>Click <a href="/sample">here</a> to view calendar. </p>
 <br><br>
 
 
@@ -16,6 +16,7 @@
   {{ form.csrf_token }}
   <p>
     {{ form.title(placeholder="title") }}
+
     <span class="error">
       {% if form.title.errors %}
         {% for error in form.title.errors %}
@@ -34,12 +35,14 @@
       {% endif %}
     </span>
   </p>
-  <button class="btn btn-sm btn-success" type="submit">Post</button>
+  <button class="btn btn-sm btn-success" type="submit">Post</button> 
 </form>
 <h3>Posts:<h3>
 {% for post in posts %}
-	<strong>Title:</strong> {{ post.title }} <br>
-	<strong>Post:</strong> {{ post.description }} <br>
+	<strong>Title:</strong> {{ post.title }} <br> 
+	<strong>Post:</strong> {{ post.description }} <br> 
+	<strong>Author:</strong> {{post.author}}
+	<button class="btn btn-xs btn-danger" type="submit">Delete Entry</button> <br>
 	
 <br>
 {% endfor %}

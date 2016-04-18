@@ -1,13 +1,14 @@
 
 from flask_wtf import Form
-from wtforms import TextField, PasswordField
+from wtforms import TextField, PasswordField, StringField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms.widgets import TextArea
 
 
 class MessageForm(Form):
     title = TextField('Title', validators=[DataRequired()])
     description = TextField(
-        'Description', validators=[DataRequired()])
+        'Description', validators=[DataRequired()], widget = TextArea())
 
 class RegisterForm(Form):
     username = TextField(
