@@ -176,6 +176,7 @@ def delete_data():
 def save_user():
     form = RegisterForm() 
     db = get_db()  
+    error = None
     if form.validate_on_submit():
                                          #database is referenced through "db"
         eid = uuid.uuid4()   
@@ -185,9 +186,14 @@ def save_user():
         epassword = bcrypt.generate_password_hash(tpassword)
         efn = request.form['first_name']
         eln = request.form['last_name']
+        verify = request.form['verification_code']
+        if verify != "pnc2016":
+            flash("incorrect code.")
+            return render_template('register.html',form=form)
         testo = query_db('SELECT * FROM users WHERE username = ?', (eusername,), one = True)
         if testo != None:
             flash('error: username already exists')
+            return redirect(url_for('register'))
                 #error checking to make sure that the username doesnt already exist
         sql = "INSERT INTO users (id, username, password, first_name, last_name) VALUES('%s', '%s', '%s', '%s', '%s')" %(eid, eusername, epassword, efn, eln)
         db.execute(sql)

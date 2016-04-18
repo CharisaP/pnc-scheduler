@@ -83,6 +83,7 @@
                     }
                 });
 
+                
                 $('#calendar').fullCalendar({
                     displayEventTime: true,
                     displayEventEnd: true,
@@ -91,10 +92,14 @@
 //////////GRAB EVENTS FROM EVENT ROUTE///////////
                     events: {
                     url: '/eventdata',
+                    eventColor: '',
                     error: function() {
                         $('#script-warning').show();
                         }
                     },
+                    eventColor: '#cc5252',
+
+                    
                     
 ////////EVENT HANDLERS FOR DAYS/EVENTS//////////
                     dayClick: function(date, jsEvent, view) {
