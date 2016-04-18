@@ -3,6 +3,7 @@
 from flask import Flask, render_template, redirect, \
     url_for, request, session, flash, jsonify, g
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.bcrypt import Bcrypt
 from flask_wtf import Form
 from tempform import RegisterForm
 from tempform import MessageForm
@@ -12,6 +13,7 @@ from sqlite3 import dbapi2 as sqlite3
 import os
 import uuid
 app = Flask(__name__, static_url_path='')
+bcrypt = Bcrypt(app)
 app.config.from_object(os.environ['APP_SETTINGS'])
 DATABASE = './db/test.db'
 #create connection and cursor
@@ -112,9 +114,9 @@ def login():
     if request.method == 'POST':
         luser = request.form['username']
         lpass = request.form['password']
-        ########un-hash the password#########
-        testo = query_db('SELECT * FROM users WHERE username >= ? AND password <= ?', (luser, lpass,), one=True)
-        if testo == None:
+        db = get_db()
+        testo = query_db('SELECT password FROM users WHERE username = ?', (luser,), one=True)
+        if ((testo == None) or (bcrypt.check_password_hash(testo[0], lpass) != True)):
             flash('error: incorrect username or password.')
             return redirect(url_for('login'))
         else:
@@ -122,12 +124,8 @@ def login():
             session['logged_in'] = True
             global CURRENT_USER
             CURRENT_USER    = luser
-            
-            ####set current user to username
-
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
-
 
 @app.route('/logout')
 @login_required
@@ -182,8 +180,9 @@ def save_user():
                                          #database is referenced through "db"
         eid = uuid.uuid4()   
                                   #id is created automatically. (never seen by user)
-        eusername = request.form['username']    
-        epassword = request.form['password']
+        eusername = request.form['username']
+        tpassword = request.form['password']
+        epassword = bcrypt.generate_password_hash(tpassword)
         efn = request.form['first_name']
         eln = request.form['last_name']
         testo = query_db('SELECT * FROM users WHERE username = ?', (eusername,), one = True)
