@@ -42,12 +42,16 @@
 </center>
 <h3>Posts:<h3>
 {% for post in posts %}
-	<strong>Title:</strong> {{ post.title }} <br> 
-	<strong>Post:</strong> {{ post.description }} <br> 
-	<strong>Author:</strong> {{post.author}}
-	<br>
-	<button class="btn btn-xs btn-danger" type="submit">Delete Entry</button> <br>
-	
+  <strong>Title:</strong> {{ post.title }} <br> 
+  <strong>Post:</strong> {{ post.description }} <br> 
+  <strong>Author:</strong> {{post.author}} <br>
+  <strong>Date Added:</strong> {{post.date}} <br>
+  <br>
+  <form action="/deletepost" method="POST">
+  <button class="btn btn-xs btn-danger" type="submit" name="deleteEntry" value= {{post.id}}>Delete Entry</button>
+  </form> <br>
+  <!-- <button type="submit" class="btn btn-xs btn-danger" id="postDel">Delete</button> <br>
+ -->  
 <br>
 
 {% endfor %}

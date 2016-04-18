@@ -41,13 +41,11 @@
             var DISPLAY_DATE_FORMAT = 'YYYY-MM-DD HH:mm';
             var JSON_DATE_FORMAT = 'YYYY-MM-DD HH:mm';
             var tempEventObj;
-
 /////FUNCTION TO SET DATE USING DATEPICKER/////
             function setModalDate(startDate, endDate) {
                 var displayStartDate, displayEndDate, jsonStartDate, jsonEndDate;
                 displayStartDate = moment(startDate).format(DISPLAY_DATE_FORMAT)
                 jsonStartDate = moment(startDate).format(JSON_DATE_FORMAT);
-
                 if(endDate != null) {
                     displayEndDate = moment(endDate).format(DISPLAY_DATE_FORMAT);
                     jsonEndDate = moment(endDate).format(JSON_DATE_FORMAT);
@@ -65,14 +63,19 @@
             }
 ///CLEAR THE MODAL IN BETWEEN USES////
             function clearModal() {
+                
                 $('#id, #title, #details, #display-start, #display-end, #start, #end').val('');
                 $('#error').css({'display': 'none'})
             }
 ///CHECK TO SEE IF INPUT IS VALID///
             function validateInput() {
                 var flag = true;
+                /*
                 flag = $('#title').val() != ''&& ((moment($('#start').val()).isBefore($('#end').val())
                         || moment($('#start').val()).isSame($('#end').val())));
+                */
+                flag = (moment($('#start').val()).isBefore($('#end').val())
+                        || moment($('#start').val()).isSame($('#end').val()));
                 return flag;
             }
 ///////////////////////////////////CALENDAR FUNCTIONS///////////////////////////////////
@@ -82,24 +85,20 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-
-                
                 $('#calendar').fullCalendar({
                     displayEventTime: true,
                     displayEventEnd: true,
                     allDay: false,
+                    eventColor: '#cc5252',
+                    eventColor: '#6F7885',
                    //editable: true,
 //////////GRAB EVENTS FROM EVENT ROUTE///////////
                     events: {
                     url: '/eventdata',
-                    eventColor: '',
                     error: function() {
                         $('#script-warning').show();
                         }
                     },
-                    eventColor: '#cc5252',
-
-                    
                     
 ////////EVENT HANDLERS FOR DAYS/EVENTS//////////
                     dayClick: function(date, jsEvent, view) {
@@ -114,7 +113,9 @@
                         setModalDate(calEvent.start, calEvent.end);
                         $('#modalTitle').text('Edit Event');
                         $('#id').val(calEvent.id);
+//
                         $('#title').val(calEvent.title);
+//
                         $('#details').val(calEvent.details);
                         $('#btnDel').css({display: 'inline'});
                         $('#modalCalendar').modal('show');
@@ -122,12 +123,10 @@
                     eventMouseover: function() {
                         $(this).css({'cursor': 'pointer'});
                     },
-
                     header: {
                         right: 'today prev,next',
                     }
                 });
-
                 $('#display-start, #display-end').change(function() {
                     var date = moment(this.value).format(JSON_DATE_FORMAT);
                     if(this.id == 'display-start') {
@@ -137,10 +136,8 @@
                         $('#end').val(json.stringify(date));
                     }
                 });
-
                 $(window).load(function(){
                     $(function () { $('#datetimepicker1').datetimepicker({
-
                         language: 'en',
                         //todayHighlight:'TRUE',
                         format: 'YYYY-MM-DD HH:mm'
@@ -151,13 +148,10 @@
                         format: 'YYYY-MM-DD HH:mm'
                     });});
                 });//]]> 
-
-
 ////////////////SAVE TO DB///////////////////
                 $('#btnSave').click(function() {
                     $('#error').css({'display': 'none'})
                     if(!validateInput()) {
-
                         $('#error').css({'display': 'block'})
                         return;
                     }
@@ -214,10 +208,16 @@
                             <div class="control-group has-error" id="error" style="display: none">
                                 <label class="control-label">Please fill in the form properly!</label>
                             </div>
-                            <div class="form-group">
+
+
+
+<!--                             <div class="form-group">
                                 <label>Name</label>                    
                                 <input type="text" name="title" id="title" class="form-control" placeholder="Title">
                             </div>
+ -->
+
+
                             <div class="form-group">
                             <label>Start Date</label>  
                               <div class='input-group date' id='datetimepicker1'>
