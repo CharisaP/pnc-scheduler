@@ -123,7 +123,7 @@ def login():
             flash("You were successfully logged in!")
             session['logged_in'] = True
             global CURRENT_USER
-            CURRENT_USER    = luser
+            CURRENT_USER = luser
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
 

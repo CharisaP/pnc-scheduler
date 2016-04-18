@@ -8,7 +8,7 @@
 <p>Click <a href="/sample">here</a> to view calendar. </p>
 <br><br>
 
-
+<center>
 <!-- post form -->
 <h3>Add a Post!</h3>
 <br>
@@ -25,6 +25,7 @@
       {% endif %}
     </span>
   </p>
+
   <p>
   {{ form.description(placeholder="description") }}
     <span class="error">
@@ -35,8 +36,10 @@
       {% endif %}
     </span>
   </p>
+
   <button class="btn btn-sm btn-success" type="submit">Post</button> 
 </form>
+</center>
 <h3>Posts:<h3>
 {% for post in posts %}
 	<strong>Title:</strong> {{ post.title }} <br> 
@@ -46,6 +49,7 @@
 	<button class="btn btn-xs btn-danger" type="submit">Delete Entry</button> <br>
 	
 <br>
+
 {% endfor %}
 
 {% endblock %}

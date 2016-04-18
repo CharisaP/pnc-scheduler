@@ -17,11 +17,11 @@ class RegisterForm(Form):
     )
     first_name = TextField(
         'first_name',
-        validators=[DataRequired(), Length(min=6, max=40)]
+        validators=[DataRequired(), Length(min=1, max=40)]
     )
     last_name = TextField(
         'last_name',
-        validators=[DataRequired(), Length(min=6, max=40)]
+        validators=[DataRequired(), Length(min=1, max=40)]
     )
     password = PasswordField(
         'password',

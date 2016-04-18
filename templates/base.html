@@ -9,7 +9,8 @@
     <link rel="stylesheet" type="text/css" href="http://primenursingcare.com/javascript/jquery/fancybox/jquery.fancybox-2.1.4.css"  media="screen"/>
    <!--  <link type="text/css" href="http://primenursingcare.com/javascript/jquery/ui/css/jquery-ui-1.10.2.custom.css" rel="stylesheet" /> -->
     
-    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+   <!--  <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet"> -->
+   <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <script src='fullcalendar-2.6.1/lib/jquery.min.js'></script>
 <script src='fullcalendar-2.6.1/lib/moment.min.js'></script>
 <script src='fullcalendar-2.6.1/fullcalendar.js'></script>
@@ -22,11 +23,12 @@
     <div class="navbar-header">
       <a class="navbar-brand" href="/">Prime Nursing Care</a>
     </div>
+
     <ul class="nav navbar-nav">
       <li class="active"><a href="/welcome">Home</a></li>
       <li><a href="/sample">Calendar</a></li>
       <li><a href="/">Announcements</a></li> 
-      
+      <img src="http://primenursingcare.com/img/grundgeruest/header/kugel.png" class="img-rounded" alt="logo">
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
