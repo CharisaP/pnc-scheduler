@@ -1,12 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
+<style>
+.postbox {
+    list-style: none;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    margin: 0 0 40px 0;
+    padding-bottom: 1px;
+}
 
-<h1>Welcome to Prime Nursing Care!</h1>
+.postTitle {
+    font-size: 4rem;
+     margin: 0 0 0 0;
+}
 
-<br>
-<p>Click <a href="/logout">here</a> to logout.</p>
-<p>Click <a href="/sample">here</a> to view calendar. </p>
-<br><br>
+.preface {
+    margin: -1rem 0 0 0;
+    color: #ccc;
+    font-size: 1.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+}
+
+.postContents {
+margin: 0 0 1rem 0;
+font-size: 1.75rem;
+}
+
+form textarea#description {
+     width: 500px;
+     height: 100px;
+     max-height: 300px;
+}
+</style>
 
 <center>
 <!-- post form -->
@@ -40,20 +68,26 @@
   <button class="btn btn-sm btn-success" type="submit">Post</button> 
 </form>
 </center>
-<h3>Posts:<h3>
-{% for post in posts %}
-  <strong>Title:</strong> {{ post.title }} <br> 
-  <strong>Post:</strong> {{ post.description }} <br> 
-  <strong>Author:</strong> {{post.author}} <br>
-  <strong>Date Added:</strong> {{post.date}} <br>
-  <br>
-  <form action="/deletepost" method="POST">
-  <button class="btn btn-xs btn-danger" type="submit" name="deleteEntry" value= {{post.id}}>Delete Entry</button>
-  </form> <br>
-  <!-- <button type="submit" class="btn btn-xs btn-danger" id="postDel">Delete</button> <br>
- -->  
 <br>
+{% for post in posts %}
+  <div class="postbox">
+    <div class="postTitle">{{ post.title }}</div>
+    <br>
 
+    <div class="preface">By {{post.author}} <br>
+          Posted on {{post.date}}
+    </div>
+    <br>
+
+    <div class="postContents">{{ post.description }}</div>
+    <br> 
+    
+    <form action="/deletepost" method="POST">
+    <button class="btn btn-xs btn-danger" type="submit" name="deleteEntry" value= {{post.id}}>Delete Entry</button>
+    </form> <br>
+
+  </div>
+  <br>
 {% endfor %}
 
 {% endblock %}

@@ -1,134 +1,220 @@
-{% extends "base.html" %}
-{% block content %}
-<!--<link href='fullcalendar-2.6.1/fullcalendar.css' rel='stylesheet' />-->
 
-<h1>Sample Calendar(Under Construction)</h1>
-<p>Click <a href="/">here</a> to go home. </p>
-<p>This is a temporary calendar with pre-loaded events. You can click on a day to add an event and name it. </p>
-<p>Descriptions for events to come.</p>
-<p>You can also drag events to relocate them to a different time/day</p>
-<p>events created on the month view are defauled to all day availability. Go to weekly view to drag over a period of time.</p>
-<p>Finally, to create an event, you can drag (while on the weekly or day view) to create an event of availability over a period of time</p>
-<script type='text/javascript'>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Full Calendar Demo - Edit Event</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
+        <meta name="csrf-token" content="Yd05oWxnM3ziySevmZVJX26xs2eJd7qeTckx0XGJ">
 
-	$(document).ready(function() {
-	
-		var date = new Date();
-		var d = date.getDate();
-		var m = date.getMonth();
-		var y = date.getFullYear();
-		
-		var calendar = $('#calendar').fullCalendar({
-			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
-			},
-			selectable: true,
-			selectHelper: true,
-			select: function(start, end, allDay) {
-				var title = prompt('Event Title:');
-				if (title) {
-					calendar.fullCalendar('renderEvent',
-						{
-							title: title,
-							start: start,
-							end: end,
-							allDay: allDay
-						},
-						true // make the event "stick"
-					);
-				}
-				calendar.fullCalendar('unselect');
-			},
-			editable: true,
-			eventLimit: true,
-			events: [
-				{
-					title: 'All Day Event',
-					start: new Date(y, m, 1)
-				},
-				{
-					title: 'Long Event',
-					start: new Date(y, m, d-5),
-					end: new Date(y, m, d-2)
-				},
-				{
-					id: 999,
-					title: 'Repeating Event',
-					start: new Date(y, m, d-3, 16, 0),
-					allDay: false
-				},
-				{
-					id: 999,
-					title: 'Repeating Event',
-					start: new Date(y, m, d+4, 16, 0),
-					allDay: false
-				},
-				{
-					title: 'Meeting',
-					start: new Date(y, m, d, 10, 30),
-					allDay: false
-				},
-				{
-					title: 'Lunch',
-					start: new Date(y, m, d, 12, 0),
-					end: new Date(y, m, d, 14, 0),
-					allDay: false
-				},
-				{
-					title: 'Birthday Party',
-					start: new Date(y, m, d+1, 19, 0),
-					end: new Date(y, m, d+1, 22, 30),
-					allDay: false
-				},
-				{
-					title: 'Click for Google',
-					start: new Date(y, m, 28),
-					end: new Date(y, m, 29),
-					url: 'http://google.com/'
-				}
-			]
+        <!-- css -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.5.0/fullcalendar.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.min.css">
 
-		});
-		
-	});
+        <!-- js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.5.0/fullcalendar.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.5.4/ckeditor.js"></script>
+        <script>
+            var DISPLAY_DATE_FORMAT = 'DD-MMM-YYYY';
+            var JSON_DATE_FORMAT = 'YYYY-MM-DD';
+            var tempEventObj;
 
-</script>
+            function setModalDate(startDate, endDate) {
+                var displayStartDate, displayEndDate, jsonStartDate, jsonEndDate;
 
-<!-- 
-<script>
-	$('#submitchange').click(function() {
-        var clientevents = $('#calendar').fullCalendar('clientEvents');
-        $.ajax({
-            url: '/eventupdate',
-            type: 'POST',
-            data: {clientdata: JSON.stringify(clientevents)},
-            success: function (response) {
-                //get the response from server and process it
-                $("#calendarupdated").append(response);
+                displayStartDate = moment(startDate).format(DISPLAY_DATE_FORMAT)
+                jsonStartDate = moment(startDate).format(JSON_DATE_FORMAT);
+
+                if(endDate != null) {
+                    displayEndDate = moment(endDate).format(DISPLAY_DATE_FORMAT);
+                    jsonEndDate = moment(endDate).format(JSON_DATE_FORMAT);
+                }
+                else {
+                    displayEndDate = displayStartDate;
+                    jsonEndDate = jsonStartDate;
+                }
+
+                $('#display-start').val(displayStartDate);
+                $('#display-end').val(displayEndDate);
+                $('#start').val(jsonStartDate);
+                $('#end').val(jsonEndDate);
             }
-        });
-    });
-</script>
- -->
-<style>
 
-	body {
-		margin: 40px 10px;
-		padding: 0;
-		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-		font-size: 14px;
-	}
+            function clearModal() {
+                $('#id, #title, #details, #display-start, #display-end, #start, #end').val('');
+                $('#error').css({'display': 'none'})
+            }
 
-	#calendar {
-		max-width: 900px;
-		margin: 0 auto;
-	}
+            function validateInput() {
+                var flag = true;
 
-</style>
+                flag = $('#title').val() != '' && $('#details').val() != ''
+                        && (moment($('#start').val()).isBefore($('#end').val())
+                        || moment($('#start').val()).isSame($('#end').val()));
 
-{% endblock %}
+                return flag;
+            }
 
+            $(document).ready(function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
 
+                $('#calendar').fullCalendar({
+                    displayEventTime: false,
+                    allDay: true,
+                    events: {
+                    url: '/eventdata',
+                    error: function() {
+                        $('#script-warning').show();
+                        }
+                    },
+                    dayClick: function(date, jsEvent, view) {
+                        clearModal();
+                        setModalDate(date);
+                        $('#modalTitle').text('Add New Event');
+                        $('#btnDel').css({display: 'none'});
+                        $('#modalCalendar').modal('show');
+                    },
+                    eventClick: function(calEvent, jsEvent, view) {
+                        tempEventObj = calEvent;
+                        setModalDate(calEvent.start, calEvent.end);
+                        $('#modalTitle').text('Edit Event');
+                        $('#id').val(calEvent.id);
+                        $('#title').val(calEvent.title);
+                        $('#details').val(calEvent.details);
+                        $('#btnDel').css({display: 'inline'});
+                        $('#modalCalendar').modal('show');
+                    },
+                    eventMouseover: function() {
+                        $(this).css({'cursor': 'pointer'});
+                    },
+                    customButtons: {
+                        home: {
+                            text: 'Home',
+                            click: function() {
+                                location.href = '/laravel/calendar';
+                            }
+                        }
+                    },
+                    header: {
+                        right: 'home today prev,next',
+                    }
+                });
 
+                $('#display-start, #display-end').datepicker({
+                    format: 'dd-M-yyyy',
+                    todayHighlight:'TRUE',
+                    autoclose: true,
+                    forceParse: false
+                });
+
+                $('#display-start, #display-end').change(function() {
+                    var date = moment(this.value).format(JSON_DATE_FORMAT);
+
+                    if(this.id == 'display-start') {
+                        $('#start').val(date);
+                    }
+                    else {
+                        $('#end').val(date);
+                    }
+                });
+
+                $('#btnSave').click(function() {
+                    $('#error').css({'display': 'none'})
+
+                    if(!validateInput()) {
+                        $('#error').css({'display': 'block'})
+                        return;
+                    }
+
+                    var data = $('#eventForm').serialize();
+
+                    $.ajax({
+                        url: '/savedata',
+                        method: 'POST',
+                        dataType: 'json',
+                        data: data,
+                        success: function(result) {
+                            $('#calendar').fullCalendar('refetchEvents');
+                            $('#modalCalendar').modal('hide');
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            $('#error').css({'display': 'block'})
+                        }
+                    });
+                });
+
+                $('#btnDel').click(function() {
+                    var data = {id: $('#id').val()};
+
+                    $.ajax({
+                        url: '/deletedata',
+                        method: 'POST',
+                        dataType: 'json',
+                        data: data,
+                        success: function(result) {
+                            $('#calendar').fullCalendar('refetchEvents');
+                            $('#modalCalendar').modal('hide');
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                        }
+                    });
+                });
+
+            });
+        </script>
+    </head>
+    <body>
+        <div class="container">        
+            <div id="calendar"></div>
+        </div>
+        <div class="modal fade" id="modalCalendar" tabindex="-1" role="dialog" aria-labelledby="modalTitle">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalTitle">Title</h4>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                        <form id="eventForm">
+                            <input type="hidden" name="id" id="id">
+                            <div class="control-group has-error" id="error" style="display: none">
+                                <label class="control-label">Please fill in the form properly!</label>
+                            </div>
+                            <div class="form-group">
+                                <label>Title</label>                    
+                                <input type="text" name="title" id="title" class="form-control" placeholder="Title">
+                            </div>
+                            <div class="form-group">
+                                <label>Start Date</label>                    
+                                <input type="text" name="display-start" id="display-start" class="form-control" placeholder="Start Date">
+                                <input type="hidden" name="start" id="start">
+                            </div>
+                            <div class="form-group">
+                                <label>End Date</label>                    
+                                <input type="text" name="display-end" id="display-end" class="form-control" placeholder="End Date">
+                                <input type="hidden" name="end" id="end">
+                            </div>
+                            <div class="form-group">
+                                <label>Details</label>                    
+                                <textarea name="details" id="details" class="form-control" placeholder="Details" rows="10"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="btnSave">Save</button>
+                        <button type="button" class="btn btn-danger" id="btnDel">Delete</button>
+                        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </body>
+</html>

@@ -56,16 +56,6 @@
       {% endif %}
     </span>
   </p>
-  <p> <label>Verification Code</label>
-  {{ form.verification_code(placeholder="code") }}
-    <span class="error">
-      {% if form.verification_code.errors %}
-        {% for error in form.verification_code.errors %}
-          {{ error }}
-        {% endfor %}
-      {% endif %}
-    </span>
-  </p>
   <button class="btn btn-sm btn-success" type="submit">Register!</button>
 </form>
 

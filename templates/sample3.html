@@ -3,18 +3,23 @@
     <head>
         <body style="background-color:lightgrey;">
         <title>PNC Scheduler</title>
-       
-       <nav class="navbar navbar-inverse">
+
+    <nav class="navbar navbar-inverse">
   <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/">Prime Nursing Care</a>
-    </div>
     
+    <div class="navbar-header">
+    <img src="http://primenursingcare.com/img/grundgeruest/header/kugel.png" class="navbar-brando" alt="logo" height="60" width="60">
+      <a class="navbar-brand" href="http://primenursingcare.com/">Prime Nursing Care</a>
+    </div>
+
     <ul class="nav navbar-nav">
-      <li class="active"><a href="/welcome">Home</a></li>
-      <li><a href="/sample">Calendar</a></li>
-      <li><a href="/">Announcements</a></li> 
-      <img src="http://primenursingcare.com/img/grundgeruest/header/kugel.png" class="img-rounded" alt="logo">
+
+      <li><a href="/welcome">Home</a></li>
+      <li class="active"><a href="/sample">Calendar</a></li>
+      <li><a href="/">Announcements</a></li>
+
+      
+
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
@@ -22,12 +27,24 @@
     </ul>
   </div>
 </nav>
+
+
         <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
         <meta name="csrf-token" content="ZnZMwftboDLjMHpWzOyXafDDgomWaZ6neUHBuaTN">
         <!-- css -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.5.0/fullcalendar.min.css">
+        <link rel="stylesheet" href="/fullcalendar-2.6.1/fullcalendar.min.css">
         <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="bootstrap-datetimepicker.min.css">
+                <style>
+.navbar-brando{float:left;height:60px;line-height:60px;margin: 5px 10px 5px 0}
+.navbar-brand{margin: 10px 0 0 0;font-size:22px}
+.navbar-nav>li>a {
+    padding-top: 25px;
+    padding-bottom: 15px;
+    font-size:16px
+}
+</style>
+       
         <!-- js -->
         <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.js"></script>
         <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -89,8 +106,8 @@
                     displayEventTime: true,
                     displayEventEnd: true,
                     allDay: false,
-                    eventColor: '#cc5252',
-                    eventColor: '#6F7885',
+                    eventColor: '#EC5B65',
+                    
                    //editable: true,
 //////////GRAB EVENTS FROM EVENT ROUTE///////////
                     events: {
