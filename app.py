@@ -202,6 +202,10 @@ def save_user():
         epassword = bcrypt.generate_password_hash(tpassword)
         efn = request.form['first_name']
         eln = request.form['last_name']
+        code = request.form['verification_code']
+        if code != "pnc2016":
+            flash("incorrect verification code")
+            return render_template('register.html',form=form)
         testo = query_db('SELECT * FROM users WHERE username = ?', (eusername,), one = True)
         if testo != None:
             flash('error: username already exists')
