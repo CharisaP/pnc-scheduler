@@ -32,9 +32,4 @@ class RegisterForm(Form):
             DataRequired(), EqualTo('password', message='Passwords must match.')
         ]
     )
-    verification_code = PasswordField(
-        'verification_code',
-        validators=[
-            DataRequired()
-        ]
-    )
+    

@@ -22,7 +22,6 @@ DATABASE = './db/test.db'
 
 CURRENT_USER = ""
 
-
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -143,6 +142,7 @@ def connect_db():
     
 
 @app.route('/eventdata')
+@login_required
 def return_data():
     mstart = request.args.get('start')
     mend = request.args.get('end')
@@ -160,6 +160,7 @@ def return_data():
     #return 'okay'
 
 @app.route('/deletedata', methods=['POST'])
+@login_required
 def delete_data():
     eid = request.form['id']
     db = get_db()
@@ -176,6 +177,7 @@ def delete_data():
     return jsonify(event_dict)
 
 @app.route('/deletepost', methods=['POST'])
+@login_required
 def delete_post():
     print '\nayyyyy\n'
     db = get_db()
@@ -186,6 +188,7 @@ def delete_post():
     return redirect(url_for('home'))
 
 @app.route('/register', methods=['GET', 'POST'])
+
 def save_user():
     #init_db()
     form = RegisterForm() 
@@ -211,6 +214,7 @@ def save_user():
         return render_template('register.html',form=form)
 
 @app.route('/savedata', methods=['POST'])
+@login_required
 def save_data():
     #init_db()
     db = get_db()
